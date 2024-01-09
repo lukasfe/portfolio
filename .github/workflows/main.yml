@@ -22,9 +22,6 @@ jobs:
       - name: Build Docker Image
         run: docker buildx build -t dvpslklarc/portfolio -f Dockerfile --platform linux/amd64,linux/arm64 . --progress=plain --push
 
-      - name: List Files
-        run: ls -R
-
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v1
         with:

@@ -8,12 +8,6 @@ resource "aws_s3_bucket" "terraform_state" {
   bucket = "iac-portfolio"
 }
 
-# Set S3 bucket ACL
-resource "aws_s3_bucket_acl" "terraform_state" {
-  bucket = aws_s3_bucket.terraform_state.bucket
-  acl    = "private"
-}
-
 # Retrieve information about default VPC
 data "aws_vpcs" "default" {}
 
