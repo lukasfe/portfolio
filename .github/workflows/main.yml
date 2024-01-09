@@ -34,14 +34,15 @@ jobs:
 
       - name: Terraform Init
         run: |
-          echo "terraform_version=${{ env.TF_VERSION }}" >> ${{ env.TF_VERSION_FILE }}
+          cd terraform
           terraform init
-          ls -R
+          terraform --version
         env:
           TF_VERSION_FILE: ${{ runner.temp }}/TF_VERSION
 
       - name: Terraform Apply
         run: |
+          cd terraform
           terraform apply -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
