@@ -26,9 +26,9 @@ resource "kubernetes_deployment" "portfolio" {
       spec {
         container {
           name  = "portfolio"
-          image = "dvpslklarc/portfolio:latest"  # Change this to your Docker image
+          image = "dvpslklarc/portfolio:latest"
 
-          ports {
+          port {
             container_port = 80
           }
         }
