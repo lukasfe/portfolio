@@ -21,8 +21,10 @@ jobs:
           ECR_REGISTRY: 546644620269.dkr.ecr.us-east-1.amazonaws.com
           ECR_REPOSITORY: portfolio
           AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           docker buildx create --use
           docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f ./Dockerfile .
-          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} | docker login -u AWS --password-stdin $ECR_REGISTRY
+          docker login -u $AWS_ACCESS_KEY_ID -p $AWS_SECRET_ACCESS_KEY $ECR_REGISTRY
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
