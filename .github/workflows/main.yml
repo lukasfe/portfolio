@@ -22,16 +22,22 @@ jobs:
       - name: Build Docker Image
         run: docker buildx build -t dvpslklarc/portfolio -f Dockerfile --platform linux/amd64,linux/arm64 . --progress=plain --push
 
+      - name: List Files
+        run: ls -R
+
       - name: Terraform Setup
         uses: hashicorp/setup-terraform@v1
         with:
           tf_version: "1.0.6"
 
       - name: Terraform Init
-        run: terraform init
+        run: |
+          terraform init
+          ls -R
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: |
+          terraform apply -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
