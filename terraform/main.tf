@@ -14,7 +14,7 @@ terraform {
 
 module "eks" {
   source            = "terraform-aws-modules/eks/aws"
-  cluster_name      = "portfolio-cluster"
+  cluster_name      = "portfolio"
   subnets           = ["subnet-1", "subnet-2", "subnet-3"]
   node_groups       = {
     eks_nodes = {
