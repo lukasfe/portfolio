@@ -32,8 +32,8 @@ jobs:
       - name: Set up kubectl
         run: |
           mkdir -p $HOME/.kube
-          aws eks --region us-east-1 update-kubeconfig --name portfolio-cluster
-          kubectl config use-context portfolio-cluster
+          aws eks --region us-east-1 update-kubeconfig --name portfolio
+          kubectl config use-context portfolio
 
       - name: Deploy to Kubernetes
         run: kubectl apply -f kubernetes-manifests/
