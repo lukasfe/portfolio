@@ -42,4 +42,4 @@ jobs:
       - name: Kubernetes Deployment
         run: kubectl apply -f kubernetes-manifests/deployment.yaml
         env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+          KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
