@@ -100,3 +100,5 @@ resource "aws_eks_node_group" "portfolio_nodes" {
     ec2_ssh_key = "portfolio-key"
   }
 }
+
+# end
