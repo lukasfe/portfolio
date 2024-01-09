@@ -58,7 +58,7 @@ resource "aws_iam_role" "eks_cluster" {
       "Action": "sts:AssumeRole",
       "Effect": "Allow",
       "Principal": {
-        "Service": "eks.amazonaws.com"
+        "Service": ["eks.amazonaws.com", "ec2.amazonaws.com"]
       }
     }
   ]
