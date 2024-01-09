@@ -44,6 +44,6 @@ jobs:
           tags: latest
 
       - name: Terraform Apply (Kubernetes)
-        run: terraform apply -auto-approve -var kube_config_context=your_kube_context_name ./terraform
+        run: terraform apply -auto-approve -var kube_config_context=portfolio ./terraform
         env:
           KUBE_CONFIG: ./kubeconfig
