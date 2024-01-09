@@ -3,9 +3,13 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Create S3 bucket
-resource "aws_s3_bucket" "terraform_state" {
-  bucket = "iac-portfolio"
+terraform {
+  backend "s3" {
+    bucket         = "iac-portfolio"
+    key            = "terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+  }
 }
 
 # Create VPC
