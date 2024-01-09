@@ -29,11 +29,16 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: "1.0.6"
+        env:
+          TF_VERSION_FILE: ${{ runner.temp }}/TF_VERSION
 
       - name: Terraform Init
         run: |
+          echo "terraform_version=${{ env.TF_VERSION }}" >> ${{ env.TF_VERSION_FILE }}
           terraform init
           ls -R
+        env:
+          TF_VERSION_FILE: ${{ runner.temp }}/TF_VERSION
 
       - name: Terraform Apply
         run: |
