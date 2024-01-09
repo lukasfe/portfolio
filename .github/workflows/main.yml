@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -18,44 +16,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build Docker Image
-        run: docker buildx build -t dvpslklarc/portfolio -f Dockerfile --platform linux/amd64,linux/arm64 . --progress=plain --push
-
-      - name: Terraform Setup
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: "1.0.6"
-
-      - name: Terraform Init
-        run: |
-          cd terraform
-          terraform init
-          terraform --version
+      - name: Build and Push Docker Image
         env:
-          TF_VERSION_FILE: ${{ runner.temp }}/TF_VERSION
-
-      - name: Terraform Apply
-        id: apply
+          ECR_REGISTRY: 546644620269.dkr.ecr.us-east-1.amazonaws.com
+          ECR_REPOSITORY: portfolio
+          AWS_REGION: us-east-1
         run: |
-          cd terraform
-          terraform apply -auto-approve
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Get Kube config file
-        id: getconfig
-        if: steps.apply.outcome == 'success'
-        run: aws eks update-kubeconfig --region us-east-1 --name portfolio-cluster
-
-      - name: Kubernetes Deployment
-        run: kubectl apply -f kubernetes-manifests/deployment.yaml
-        env:
-          KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
+          docker buildx create --use
+          docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f ./Dockerfile .
+          echo ${{ secrets.AWS_SECRET_ACCESS_KEY }} | docker login -u AWS --password-stdin $ECR_REGISTRY
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest

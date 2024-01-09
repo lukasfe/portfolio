@@ -1,16 +1,14 @@
-# Use an official Nginx image as the base image
-FROM nginx:latest
+# Use a lightweight base image
+FROM nginx:alpine
 
-# Remove the default Nginx website
-RUN rm -rf /usr/share/nginx/html/*
+# Set the working directory to the website folder
+WORKDIR /usr/share/nginx/html
 
-# Copy the static website files to the Nginx web server root directory
-COPY /website /usr/share/nginx/html
+# Copy the static website files into the container
+COPY ./website .
 
-# Expose port 80 for HTTP traffic
+# Expose the port the app runs on
 EXPOSE 80
 
-# Start Nginx in the foreground
+# CMD to start Nginx
 CMD ["nginx", "-g", "daemon off;"]
-#
-#
