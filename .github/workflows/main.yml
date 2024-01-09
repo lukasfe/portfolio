@@ -22,12 +22,20 @@ jobs:
           repository: dvpslklarc/portfolio
           tags: latest
 
-      - name: Set up AWS CLI
+      - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Deploy to Kubernetes
-        run: kubectl apply -f kubernetes/deployment.yaml
+      - name: Set up Terraform and Kubectl
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.9
+
+      - name: Terraform Init
+        run: terraform init ./terraform
+
+      - name: Terraform Apply (Kubernetes)
+        run: terraform apply -auto-approve -var kube_config_context=portfolio ./terraform
