@@ -13,6 +13,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Download kubeconfig from S3
+        run: aws s3 cp s3://iac-portfolio/config kubeconfig
+
+      - name: Set up Terraform and Kubectl
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.9
+          tf_actions_version: 2
+
+      - name: Terraform Init
+        run: terraform init ./terraform
+        env:
+          KUBE_CONFIG: ./kubeconfig
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
@@ -22,20 +43,7 @@ jobs:
           repository: dvpslklarc/portfolio
           tags: latest
 
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Set up Terraform and Kubectl
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 0.14.9
-
-      - name: Terraform Init
-        run: terraform init ./terraform
-
       - name: Terraform Apply (Kubernetes)
-        run: terraform apply -auto-approve -var kube_config_context=portfolio ./terraform
+        run: terraform apply -auto-approve -var kube_config_context=your_kube_context_name ./terraform
+        env:
+          KUBE_CONFIG: ./kubeconfig
