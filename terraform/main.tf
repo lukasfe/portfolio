@@ -8,24 +8,28 @@ resource "aws_s3_bucket" "terraform_state" {
   bucket = "iac-portfolio"
 }
 
-# Retrieve information about default VPC
-data "aws_vpcs" "default" {}
+# Create VPC
+resource "aws_vpc" "portfolio_vpc" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+}
 
-# Create subnets in the default VPC
+# Create subnets in the new VPC
 resource "aws_subnet" "private" {
   count = 3
 
-  vpc_id           = data.aws_vpcs.default.ids[0]
+  vpc_id           = aws_vpc.portfolio_vpc.id
   cidr_block       = element(["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"], count.index)
   availability_zone = element(["us-east-1a", "us-east-1b", "us-east-1c"], count.index)
 }
 
-# Create security group in the default VPC
+# Create security group in the new VPC
 resource "aws_security_group" "eks_cluster" {
   name        = "eks-cluster"
   description = "EKS Cluster Security Group"
 
-  vpc_id = data.aws_vpcs.default.ids[0]
+  vpc_id = aws_vpc.portfolio_vpc.id
 
   ingress {
     from_port   = 0
