@@ -1,11 +1,14 @@
-# Use a lightweight base image
-FROM nginx:alpine
+# Use an official Nginx image as the base image
+FROM nginx:latest
 
-# Copy your website files to the nginx web server directory
-COPY website/ /usr/share/nginx/html
+# Remove the default Nginx website
+RUN rm -rf /usr/share/nginx/html/*
 
-# Expose port 80
+# Copy the static website files to the Nginx web server root directory
+COPY /website /usr/share/nginx/html
+
+# Expose port 80 for HTTP traffic
 EXPOSE 80
 
-# Command to run the nginx server
+# Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
