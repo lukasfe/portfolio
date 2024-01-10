@@ -34,5 +34,14 @@ jobs:
           AWS_REGION: us-east-1
         run: |
           docker build -t portfolio .
-          docker tag portfolio:latest 546644620269.dkr.ecr.us-east-1.amazonaws.com/portfolio:latest
-          docker push 546644620269.dkr.ecr.us-east-1.amazonaws.com/portfolio:latest
+          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Update ECS Task Definition and Service
+        env:
+          ECS_CLUSTER: portfolio-ecs
+          ECS_SERVICE: portfolio-svc
+          ECS_TASK_FAMILY: pipeline-portfolio-ecs
+        run: |
+          aws ecs register-task-definition --region $AWS_REGION --family $ECS_TASK_FAMILY --container-definitions "$(cat task-definition.json)"
+          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_FAMILY:LATEST
