@@ -45,7 +45,7 @@ jobs:
           AWS_REGION: us-east-1
         run: |
           # Get the latest revision number for the task definition family
-          LATEST_REVISION=$(aws ecs describe-task-definition --region $AWS_REGION --task-definition $ECS_TASK_FAMILY --query 'taskDefinition.revisions[0]')
+          # LATEST_REVISION=$(aws ecs describe-task-definition --region $AWS_REGION --task-definition $ECS_TASK_FAMILY --query 'taskDefinition.revisions[0]')
 
           # Update the service with the latest revision
-          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_FAMILY:$LATEST_REVISION
+          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition "$ECS_TASK_FAMILY:1"
