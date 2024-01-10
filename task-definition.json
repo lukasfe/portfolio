@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:546644620269:task-definition/pipeline-portfolio-ecs:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:546644620269:task-definition/pipeline-portfolio-ecs:latest",
     "containerDefinitions": [
         {
             "name": "portfolio",
