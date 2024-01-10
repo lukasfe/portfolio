@@ -37,13 +37,6 @@ jobs:
           docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-      - name: Debug Container Definitions
-        run: |
-          echo "Container Definitions Content:"
-          cat task-definition.json
-        env:
-          ECS_TASK_FAMILY: pipeline-portfolio-ecs
-
       - name: Update ECS Task Definition and Service
         env:
           ECS_CLUSTER: portfolio-ecs
