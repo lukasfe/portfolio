@@ -44,4 +44,4 @@ jobs:
           ECS_TASK_FAMILY: pipeline-portfolio-ecs
         run: |
           aws ecs register-task-definition --region $AWS_REGION --family $ECS_TASK_FAMILY --container-definitions "$(cat task-definition.json)"
-          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_FAMILY:latest
+          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_FAMILY:1
