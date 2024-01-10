@@ -34,5 +34,5 @@ jobs:
           AWS_REGION: us-east-1
         run: |
           docker buildx create --use
-          docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f ./Dockerfile .
+          docker buildx build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA -f ./Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
