@@ -33,9 +33,6 @@ jobs:
           ECR_REPOSITORY: portfolio
           AWS_REGION: us-east-1
         run: |
-          IMAGE_URI=$ECR_REGISTRY/$ECR_REPOSITORY
-          docker buildx create --use
-          docker buildx build --platform linux/amd64 -t $IMAGE_URI:latest -f ./Dockerfile .
-          docker tag $IMAGE_URI:latest $IMAGE_URI:$GITHUB_SHA
-          docker push $IMAGE_URI:latest
-          docker push $IMAGE_URI:$GITHUB_SHA
+          docker build -t portfolio .
+          docker tag portfolio:latest 546644620269.dkr.ecr.us-east-1.amazonaws.com/portfolio:latest
+          docker push 546644620269.dkr.ecr.us-east-1.amazonaws.com/portfolio:latest
