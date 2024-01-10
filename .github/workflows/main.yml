@@ -34,7 +34,7 @@ jobs:
           AWS_REGION: us-east-1
         run: |
           docker build -t portfolio .
-          docker tag $ECR_REPOSITORY:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker tag portfolio:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Update ECS Task Definition and Service
@@ -43,5 +43,8 @@ jobs:
           ECS_SERVICE: portfolio-svc
           ECS_TASK_FAMILY: pipeline-portfolio-ecs
         run: |
-          aws ecs register-task-definition --region $AWS_REGION --family $ECS_TASK_FAMILY --container-definitions "$(cat task-definition.json)"
-          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_FAMILY:1
+          # Get the latest revision number for the task definition family
+          LATEST_REVISION=$(aws ecs describe-task-definition --region $AWS_REGION --task-definition $ECS_TASK_FAMILY --query 'taskDefinition.revisions[0]')
+
+          # Update the service with the latest revision
+          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition $ECS_TASK_FAMILY:$LATEST_REVISION
