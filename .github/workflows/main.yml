@@ -44,4 +44,5 @@ jobs:
           ECS_TASK_FAMILY: pipeline-portfolio-ecs
           AWS_REGION: us-east-1
         run: |
-          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition "$ECS_TASK_FAMILY:6"
+          latest_revision=$(aws ecs describe-task-definition --region $AWS_REGION --task-definition $ECS_TASK_FAMILY --query 'taskDefinition.revision')
+          aws ecs update-service --region $AWS_REGION --cluster $ECS_CLUSTER --service $ECS_SERVICE --task-definition "$ECS_TASK_FAMILY:$latest_revision"
